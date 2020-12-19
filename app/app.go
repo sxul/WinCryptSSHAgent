@@ -12,9 +12,11 @@ const (
 	APP_CYGWIN  = iota
 	APP_WSL
 	APP_WINSSH
+	APP_HYPERV
 	APP_SECURECRT
 	APP_PAGEANT
 	APP_PUBKEY
+	APP_WSL2
 	MENU_QUIT
 )
 
@@ -32,6 +34,7 @@ var appIdToName = map[AppId]string{
 	APP_WINSSH:    "WinSSH",
 	APP_SECURECRT: "SecureCRT",
 	APP_PAGEANT:   "Pageant",
+	APP_HYPERV:    "Hyper-V",
 }
 
 var appIdToFullName = map[AppId]string{
@@ -40,6 +43,7 @@ var appIdToFullName = map[AppId]string{
 	APP_WINSSH:    "Windows OpenSSH",
 	APP_SECURECRT: "SecureCRT",
 	APP_PAGEANT:   "Pageant",
+	APP_HYPERV:    "Hyper-V",
 }
 
 func (id AppId) String() string {

@@ -19,10 +19,11 @@ type WSL struct {
 }
 
 func listenUnixSock(filename string) (string, net.Listener, error) {
-	path, err := filepath.Abs(filename)
+	home, err := os.UserHomeDir()
 	if err != nil {
 		return "", nil, err
 	}
+	path := filepath.Join(home, filename)
 	os.Remove(path)
 	l, err := net.Listen("unix", path)
 	return path, l, err
@@ -57,7 +58,7 @@ func (s *WSL) Run(ctx context.Context, handler func(conn io.ReadWriteCloser)) er
 	if !fallback {
 		s.help = fmt.Sprintf("export SSH_AUTH_SOCK=" + winPath2Unix(path))
 	} else {
-		s.help = fmt.Sprintf("socat -d UNIX-LISTEN:/tmp/ssh-capi-agent.sock,reuseaddr,fork TCP:localhost:%d &\n", l.Addr().(*net.TCPAddr).Port)
+		s.help = fmt.Sprintf("socat UNIX-LISTEN:/tmp/ssh-capi-agent.sock,reuseaddr,fork TCP:localhost:%d &\n", l.Addr().(*net.TCPAddr).Port)
 		s.help += "export SSH_AUTH_SOCK=/tmp/ssh-capi-agent.sock"
 	}
 	// loop
@@ -90,7 +91,7 @@ func (*WSL) AppId() AppId {
 }
 
 func (s *WSL) Menu(register func(id AppId, name string, handler func())) {
-	register(s.AppId(), s.AppId().String()+" Help", s.onClick)
+	register(s.AppId(), "Show "+s.AppId().String()+" Settings", s.onClick)
 }
 
 func (s *WSL) onClick() {
